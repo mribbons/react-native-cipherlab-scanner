@@ -15,7 +15,6 @@ $ react-native@0.52.0 # this works for me on Windows
 $ npm uninstall babel-preset-react-native
 $ npm install babel-preset-react-native
 $ npm install react-native-cipherlab-scanner --save
-$ react-native run-android
 ```
 
 #### Android
