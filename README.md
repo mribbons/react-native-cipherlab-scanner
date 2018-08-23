@@ -8,12 +8,9 @@ CipherLab RS31
 ## Getting started
 
 ```bash
-$ react-native init AwesomeScanner
-$ cd AwesomeScanner
+$ react-native init --version="0.55.4" AwesomeScanner
+$ cd AwesomeScanner 
 $ npm install
-$ react-native@0.52.0 # this works for me on Windows
-$ npm uninstall babel-preset-react-native
-$ npm install babel-preset-react-native
 $ npm install react-native-cipherlab-scanner --save
 ```
 
