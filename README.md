@@ -35,24 +35,24 @@ $ npm install react-native-cipherlab-scanner --save
 // App.js
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
-
-
+ 
+ 
 import CipherLabScannerModule from 'react-native-cipherlab-scanner';
 import { DeviceEventEmitter, Button } from 'react-native';
-
+ 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
   android:
     'Double tap R on your keyboard to reload,\n' +
     'Shake or press menu button for dev menu',
 });
-
+ 
 type Props = {};
 export default class App extends Component<Props> {
   constructor(props)
   {
     super(props);
-
+ 
     this.state = {
       barcode: '',
       type: '',
@@ -60,7 +60,7 @@ export default class App extends Component<Props> {
     }
     
     this.requestScan=this.requestScan.bind(this); 
-
+ 
     // MDR 21/08/2018 - make fake scans if we're on an emulator
     var _this = this;
     this.scanner = {
@@ -71,24 +71,27 @@ export default class App extends Component<Props> {
     
     this.listeners = [];
   }
-
+ 
   async componentDidMount() {
     this.listeners.push(DeviceEventEmitter.addListener('CIPHERLAB.initEvent', this.scannerInitEvent.bind(this)));
     this.listeners.push(DeviceEventEmitter.addListener('CIPHERLAB.barcodeReadEvent', this.barcodeReadEvent.bind(this)));
 
+    // MDR 23/08/2018 - We can subscribe to some hardware specific intents
+    this.listeners.push(DeviceEventEmitter.addListener('CIPHERLAB.receiveIntent', this.cipherlabReceiveIntent.bind(this) ));
+ 
     await CipherLabScannerModule.initialise();
-
+ 
     // MDR 21/08/2018 - Note that this incurs a performance hit for each scan
     await CipherLabScannerModule.enableBinaryData();
   }
-
+ 
   async componentWillUnmount() {
     console.log(`componentWillUnmount()`);
-
+ 
     for (var x in this.listeners) {
       this.listeners[x].remove();
     }
-
+ 
     this.listeners = [];
   }
   
@@ -96,17 +99,28 @@ export default class App extends Component<Props> {
     //CipherLabScannerModule.requestScan();
     this.scanner.requestScan();
   }
-
+ 
   async scannerInitEvent(e) {
     // MDR 21/08/2018 - The onboard scanner has been initialised, overwrite our fake scanner
     console.log(`CIPHERLAB.initEvent initcallback`);
     this.scanner = CipherLabScannerModule;
   }
-
+ 
   async barcodeReadEvent(e) {
     this.setState({barcode: e.barcode, type: e.type, binary: e.binary});
   }
 
+  async cipherlabReceiveIntent(e)
+  {
+    switch (e.action)
+    {
+      case "android.intent.action.FUNC_BUTTON":
+        console.log(`func button: `, e);
+        this.setState({barcode: ''});
+        break;  
+    }
+  }
+ 
   render() {
     return (
       <View style={styles.container}>
@@ -121,7 +135,7 @@ export default class App extends Component<Props> {
     );
   }
 }
-
+ 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
