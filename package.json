@@ -1,7 +1,7 @@
 
 {
   "name": "react-native-cipherlab-scanner",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,8 +17,8 @@
   "author": "Michael Ribbons",
   "license": "MIT",
   "peerDependencies": {
-    "react-native": "^0.41.2"
-  }, 
+    "react-native": "^0.54.2"
+  },
   "bugs": {
     "url": "https://github.com/mribbons/react-native-cipherlab-scanner/issues"
   },
