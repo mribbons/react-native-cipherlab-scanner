@@ -17,7 +17,7 @@
   "author": "Michael Ribbons",
   "license": "MIT",
   "peerDependencies": {
-    "react-native": "^0.54.2"
+    "react-native": "^0.59.9"
   },
   "bugs": {
     "url": "https://github.com/mribbons/react-native-cipherlab-scanner/issues"
