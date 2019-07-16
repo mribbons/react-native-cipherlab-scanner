@@ -8,7 +8,7 @@ CipherLab RS31
 ## Getting started
 
 ```bash
-$ react-native init --version="0.55.4" AwesomeScanner
+$ react-native init --version="0.59.9" AwesomeScanner
 $ cd AwesomeScanner 
 $ npm install
 $ npm install react-native-cipherlab-scanner --save
@@ -26,7 +26,7 @@ $ npm install react-native-cipherlab-scanner --save
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
-      compile project(':react-native-cipherlab-scanner')
+      implementation project(':react-native-cipherlab-scanner')
   	```
 
 
