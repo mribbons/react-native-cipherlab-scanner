@@ -178,8 +178,6 @@ public class CipherLabScannerModule extends ReactContextBaseJavaModule {
 			filter.addAction(com.cipherlab.barcode.GeneralString.Intent_SOFTTRIGGER_DATA);
 			filter.addAction(com.cipherlab.barcode.GeneralString.Intent_PASS_TO_APP);
 			filter.addAction(com.cipherlab.barcode.GeneralString.Intent_READERSERVICE_CONNECTED);
-			filter.addAction(com.cipherlab.barcode.GeneralString.Intent_FUNC_BUTTON);
-			filter.addAction(com.cipherlab.barcode.GeneralString.Intent_FUNC_RELEASE_BUTTON);
 			
 			
 
