@@ -3,12 +3,12 @@
 Use react-native on your Android based CipherLab scanner!
 
 ## Supported Models:
-CipherLab RS31
+CipherLab RK25
 
 ## Getting started
 
 ```bash
-$ react-native init --version="0.59.9" AwesomeScanner
+$ react-native init --version="0.60.5" AwesomeScanner
 $ cd AwesomeScanner 
 $ npm install
 $ npm install react-native-cipherlab-scanner --save

@@ -1,26 +1,28 @@
-
 {
   "name": "react-native-cipherlab-scanner",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "react-native", "CipherLab", "Barcode","Scanner"
+    "react-native",
+    "CipherLab",
+    "Barcode",
+    "Scanner"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mribbons/react-native-cipherlab-scanner.git"
-  },   
-  "author": "Michael Ribbons",
+    "url": "git+https://github.com/Aexonic-Abhishek/react-native-cipherlab-scanner.git"
+  },
+  "author": "Aexonic-Abhishek",
   "license": "MIT",
   "peerDependencies": {
-    "react-native": "^0.59.9"
+    "react-native": "^0.60.5"
   },
   "bugs": {
-    "url": "https://github.com/mribbons/react-native-cipherlab-scanner/issues"
+    "url": "https://github.com/Aexonic-Abhishek/react-native-cipherlab-scanner/issues"
   },
-  "homepage": "https://github.com/mribbons/react-native-cipherlab-scanner#readme"
+  "homepage": "https://github.com/Aexonic-Abhishek/react-native-cipherlab-scanner#readme"
 }
