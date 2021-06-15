@@ -3,7 +3,7 @@
 Use react-native on your Android based CipherLab scanner!
 
 ## Supported Models:
-CipherLab RS31
+CipherLab RK25
 
 ## Getting started
 

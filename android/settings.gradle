@@ -1,4 +1,4 @@
 rootProject.name = 'cipherlab.scanner'
 
 include ':barcode-api'
-project(':barcode-api').projectDir = new File(rootProject.projectDir, '../libs/BarcodeAPI_V1_0_41.jar')
+project(':barcode-api').projectDir = new File(rootProject.projectDir, '../libs/BarcodeAPI_V1_1_40.jar')
