@@ -22,6 +22,7 @@ SOFTWARE.
 
 package au.com.micropacific.react.cipherlab;
 
+import com.cipherlab.rfidapi.RfidManager;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -73,6 +74,9 @@ public class CipherLabScannerModule extends ReactContextBaseJavaModule {
 
     private com.cipherlab.barcode.ReaderManager mReaderManager;
     private DataReceiver mDataReceiver;
+
+    private com.cipherlab.rfidapi.RfidManager rReaderManager;
+    private RfidDataReceiver rDataReceiver;
 
     public static IModuleCounter MainActivity;
 
@@ -345,5 +349,132 @@ public class CipherLabScannerModule extends ReactContextBaseJavaModule {
             int current = savedInstanceState.getInt(READER_TYPE);
             Log.v(DEBUG_TAG, String.format("onRestoreInstanceState = %d", new Object[]{Integer.valueOf(current)}));
         }
+    }
+
+    //***********************************RFID methods*****************************************
+
+    private IntentFilter rfidFilter = null;
+    private Activity rfidActivity;
+
+
+    @ReactMethod
+    public void requestRfidScan(boolean doScan)
+    {
+        rReaderManager.SoftScanTrigger(doScan);
+    }
+
+    @ReactMethod
+    public void initialiseRfid() {
+        this.initialiseRfid(true);
+    }
+
+    public void initialiseRfid(boolean checkRegisteredModules)
+    {
+//        if (MainActivity != null)
+//            Log.v(CipherLabScannerModule.DEBUG_TAG, "module size: " + MainActivity.getModuleSize() + ", " + checkRegisteredModules);
+//
+//        if (checkRegisteredModules && MainActivity != null && MainActivity.getModuleSize() > 0) {
+//            // MDR 27/04/2018 - Previous copy already exists, js code will catch RS30.init event when that versions init is called
+//            Log.v(CipherLabScannerModule.DEBUG_TAG, "Module already registered, deferring");
+//            Log.v(CipherLabScannerModule.DEBUG_TAG, "RS30.init 2");
+//            this.initCallback();
+//            return;
+//        } else {
+//        }
+//
+//        sendEvent(_reactContext, "setupStarted", null);
+
+        try
+        {
+            Activity rfidActivity = null;
+            if ((rfidActivity = getCurrentActivity()) == null)
+            {
+                Log.v(CipherLabScannerModule.DEBUG_TAG, "getCurrentActivity() is null");
+            } else {
+                Log.v(CipherLabScannerModule.DEBUG_TAG, "getCurrentActivity() is something");
+            }
+
+            rfidFilter = new IntentFilter();
+            rfidFilter.addAction(com.cipherlab.rfid.GeneralString.Intent_RFIDSERVICE_CONNECTED);
+            rfidFilter.addAction(com.cipherlab.rfid.GeneralString.Intent_RFIDSERVICE_TAG_DATA);
+
+
+
+            // MDR 26/04/2018 - Should be handled in Intent_READERSERVICE_CONNECTED handler, but we never get that intent
+            // com.cipherlab.barcode.decoderparams.ReaderOutputConfiguration settings = new ReaderOutputConfiguration();
+            // settings.enableKeyboardEmulation = KeyboardEmulationType.None;
+            // mReaderManager.Set_ReaderOutputConfiguration(settings);
+
+            rDataReceiver = new RfidDataReceiver(this, null, _reactContext, checkRegisteredModules);
+            rfidActivity.registerReceiver(rDataReceiver, rfidFilter);
+
+            rReaderManager = RfidManager.InitInstance(rfidActivity);
+            //Log.v(DEBUG_TAG, "Service running: " + mReaderManager.GetReaderType());
+
+            this.activity = rfidActivity;
+
+            if (rReaderManager != null)
+            {
+                rDataReceiver.setReaderManager(rReaderManager);
+                Log.v(CipherLabScannerModule.DEBUG_TAG, "Got rfid reader manager: " + rReaderManager);
+            } else {
+                Log.v(CipherLabScannerModule.DEBUG_TAG, "Null RFIDReaderManager, no scanner?");
+            }
+        } catch (Exception e)
+        {
+            StringWriter writer = new StringWriter();
+            PrintWriter printWriter = new PrintWriter( writer );
+            e.printStackTrace( printWriter );
+            printWriter.flush();
+
+            String stackTrace = writer.toString();
+
+            Log.v(CipherLabScannerModule.DEBUG_TAG, "Error starting rfid reader manager: " + stackTrace);
+        }
+
+        if (MainActivity != null && MainActivity.getModuleSize() == 0)
+            MainActivity.registerModule(this);
+
+        Log.v(CipherLabScannerModule.DEBUG_TAG, "CipherLabScanner.initialise() Done");
+    }
+
+    private void sendRfidEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+        CatalystInstance instance = reactContext.getCatalystInstance();
+
+        if (instance.isDestroyed())
+        {
+            Log.v(DEBUG_TAG, "skipping call, isDestroyed");
+
+            if (this.rDataReceiver != null)
+            {
+                try {
+                    //((Context)this._reactContext.getBaseContext()).unregisterReceiver(mDataReceiver);
+                    Log.v(DEBUG_TAG, "sendRfidEvent: unregisterReceiver()");
+                    this.rfidActivity.unregisterReceiver(rDataReceiver);
+
+                    rReaderManager.Release();
+                    this.rReaderManager = null;
+                    this.rDataReceiver = null;
+                    this.rfidActivity = null;
+                } catch (Exception e)
+                {
+                    Log.v(DEBUG_TAG, "Error in unregister: " + e.toString());
+                }
+            } else {
+                Log.v(DEBUG_TAG, "rDataReceiver already null.");
+            }
+
+            return;
+        }
+
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(EVENT_TAG + "." + eventName, params);
+    }
+
+    public void receiveRfidData(WritableMap params) {
+        Log.v(CipherLabScannerModule.DEBUG_TAG, "rfidReadEvent(" + params + ")");
+        sendRfidEvent(_reactContext, "rfidReadEvent", params);
+
     }
 }

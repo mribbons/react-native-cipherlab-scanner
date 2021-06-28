@@ -2,3 +2,5 @@ rootProject.name = 'cipherlab.scanner'
 
 include ':barcode-api'
 project(':barcode-api').projectDir = new File(rootProject.projectDir, '../libs/BarcodeAPI_V1_1_40.jar')
+include ':rfid-api'
+project(':rfid-api').projectDir = new File(rootProject.projectDir, '../libs/RfidAPI_V1_0_18.jar')
